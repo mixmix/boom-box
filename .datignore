@@ -1,0 +1,7 @@
+.git
+.dat
+node_modules
+lib/src
+*.log
+**/.DS_Store
+Thumbs.db
