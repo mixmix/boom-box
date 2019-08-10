@@ -2,12 +2,32 @@ const template = `
   <div class='Player'>
     <audio ref='player' controls autoplay v-on:ended='nextTrack' />
     <div class='tracks'>
-      <div v-for='(track, i) in music' v-on:click='selectTrack(i)' :class='trackClass(i)' >
+      <div v-for='(track, i) in music' v-on:click='selectTrack(i)' :class='trackClass(i)' :key='track.uri'>
         {{i + 1}}. {{track.name}}
       </div>
     </div>
     <
   </div>
+`
+
+const styles = `
+.Player {
+  audio {
+  }
+  color: blue;
+
+  .tracks {
+    div {
+      cursor: pointer;
+      padding: 4px;
+
+      &.selected {
+        background: black;
+        color: white;
+      }
+    }
+  }
+}
 `
 
 export default {
@@ -31,14 +51,25 @@ export default {
   },
   watch: {
     currentTrack (next, prev) {
-      if (next === null) return
+      console.log('currentTrack', next, prev, this.currentTrack)
+
+      if (next === null) {
+        this.$refs.player.pause()
+        return
+      }
 
       this.$refs.player.src = this.music[next].uri
+      this.$refs.player.load()
+    },
+    music (next) {
+      this.currentTrack = 0
+      this.$refs.player.src = this.music[0].uri
       this.$refs.player.load()
     }
   },
   created () {
     this.currentTrack = 0
   },
-  template
+  template,
+  styles
 }

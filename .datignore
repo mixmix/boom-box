@@ -1,6 +1,7 @@
 .git
 .dat
 node_modules
+build
 *.log
 **/.DS_Store
 Thumbs.db

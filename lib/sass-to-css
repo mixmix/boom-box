@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+
+const stdin = process.openStdin()
+const { renderSync } = require('node-sass')
+
+var sass = ''
+
+stdin.on('data', (chunk) => {
+  sass += chunk
+})
+
+stdin.on('end', () => {
+  const results = renderSync({ data: sass })
+
+  console.log(results.css.toString())
+})

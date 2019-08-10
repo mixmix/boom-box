@@ -4,8 +4,11 @@
   "description": "play dats which have mp3s in them",
   "main": "index.js",
   "scripts": {
-    "build": "run-p build:yo",
-    "build:yo": "browserify -p tinyify lib/src/yo-yo.js > lib/yo-yo.js"
+    "build": "run-p build:css",
+    "build:css": "mkdir -p build && run-s build:get-sass build:run-sass",
+    "build:get-sass": "browserify src/get-sass.js > build/get-sass.js ",
+    "build:run-sass": "node build/get-sass.js | lib/sass-to-css > style.css",
+    "dev": "npm-watch"
   },
   "browserify": {
     "transform": [
@@ -15,21 +18,16 @@
       "tinyify"
     ]
   },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ]
-  },
-  "dependencies": {
-    "yo-yo": "^1.4.1"
+  "watch": {
+    "build:run-sass": "**/*.js"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "babelify": "^10.0.0",
     "browserify": "^16.2.3",
-    "npm-run-all": "^4.1.5",
-    "tinyify": "^2.5.1"
+    "node-sass": "^4.12.0",
+    "npm-run-all": "^4.1.5"
   },
   "repository": {
     "type": "git",

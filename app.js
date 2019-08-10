@@ -1,22 +1,74 @@
-// import Player from './components/player.js'
+import loadCassette from './lib/load-cassette.js'
+import Player from './components/player.js'
+import CoverArt from './components/cover-art.js'
+import History from './components/history.js'
 
-// export default async function App () {
-//   var player = await Player()
+const template = `
+  <div class='App'>
+    <h1>boom-box</h1>
+    <input type='text' v-on:keyup="processInput"/>
+    <Player :music='music' v-if='isPlayable' />
+    <History :tape='tape' v-on:load-tape='playCassette($event)'/>
+    <CoverArt :art='art' v-if='isPlayable' />
+  </div>
+`
 
-//   const view = yo`
-//     <div id='app'>
-//       <h1>Boom box</h1>
-//       <input type='text' onkeyup=${updateCassette}/>
+const styles = `
+.App {
+  font-family: arial;
 
-//       ${player}
-//     </div>
-//   `
+  > input {
+    width: 50vw;
+    padding: 5px;
+  }
+}
+`
 
-//   async function updateCassette (ev) {
-//     const link = ev.target.value
-//     // TODO validate
-//     yo.update(player, await Player(link))
-//   }
+// example tape:
+// dat://ef69934eb101628180d7dfa72ef04df038b534c943be510b4e4bb8f2d7b5e6b5
 
-//   return view
-// }
+export default { // eslint-disable-line
+  el: '#app',
+  data: {
+    tape: '',
+    music: [],
+    art: []
+  },
+  computed: {
+    isPlayable () {
+      return this.music.length > 0
+    }
+  },
+  methods: {
+    processInput (ev) {
+      var link = ev.target.value
+      if (!isDatUri(link)) return
+
+      this.playCassette(link)
+    },
+    playCassette (link) {
+      loadCassette(link, (err, data) => {
+        if (err) {
+          console.error(err)
+          // TODO ... display to user
+          return
+        }
+
+        this.tape = link
+        this.music = data.music
+        this.art = data.art
+      })
+    }
+  },
+  template,
+  styles,
+  components: {
+    Player,
+    CoverArt,
+    History
+  }
+}
+
+function isDatUri (link) {
+  return link.startsWith('dat://')
+}
