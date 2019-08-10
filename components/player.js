@@ -51,8 +51,6 @@ export default {
   },
   watch: {
     currentTrack (next, prev) {
-      console.log('currentTrack', next, prev, this.currentTrack)
-
       if (next === null) {
         this.$refs.player.pause()
         return

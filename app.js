@@ -5,10 +5,10 @@ import History from './components/history.js'
 
 const template = `
   <div class='App'>
-    <h1>boom-box</h1>
+    <h1>{{name}}</h1>
     <input type='text' v-on:keyup="processInput"/>
     <Player :music='music' v-if='isPlayable' />
-    <History :tape='tape' v-on:load-tape='playCassette($event)'/>
+    <History :uri='uri' :name='name' v-on:load-tape='playCassette($event)'/>
     <CoverArt :art='art' v-if='isPlayable' />
   </div>
 `
@@ -30,7 +30,8 @@ const styles = `
 export default { // eslint-disable-line
   el: '#app',
   data: {
-    tape: '',
+    uri: '',
+    name: 'boom-box',
     music: [],
     art: []
   },
@@ -41,9 +42,10 @@ export default { // eslint-disable-line
   },
   methods: {
     processInput (ev) {
-      var link = ev.target.value
+      var link = ev.target.value.trim()
       if (!isDatUri(link)) return
 
+      if (link === this.uri) return
       this.playCassette(link)
     },
     playCassette (link) {
@@ -54,7 +56,8 @@ export default { // eslint-disable-line
           return
         }
 
-        this.tape = link
+        this.uri = link
+        this.name = data.name
         this.music = data.music
         this.art = data.art
       })

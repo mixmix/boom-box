@@ -1,7 +1,7 @@
 const template = `
  <div class='History'>
-   <div v-for='tape in history' v-on:click="$emit('load-tape', tape)" :class='tapeClass(tape)'>
-     {{tape}}
+   <div v-for='tape in history' v-on:click="$emit('load-tape', tape.uri)" :class='tapeClass(tape)'>
+     {{tape.name}}
    </div>
  </div>
 `
@@ -24,26 +24,32 @@ const styles = `
 
 export default {
   props: {
-    tape: String
+    uri: String,
+    name: String
   },
   data: () => ({
     history: []
   }),
   methods: {
     tapeClass (testTape) {
-      return testTape === this.tape ? 'selected' : ''
+      return testTape.uri === this.uri ? 'selected' : ''
     }
   },
   created () {
     this.history = JSON.parse(localStorage.boomBox || '[]') // eslint-disable-line
+      .sort((a, b) => (b.name > a.name) ? -1 : +1)
   },
   watch: {
-    tape (next) {
-      if (!this.tape.length) return
+    uri (next) {
+      if (!next.length) return
 
-      this.history = Array.from(
-        new Set([ next, ...this.history ])
-      )
+      const newHistory = [ ...this.history ]
+        .filter(tape => tape.uri !== next)
+
+      newHistory.unshift({ uri: next, name: this.name })
+      newHistory.sort((a, b) => (b.name > a.name) ? -1 : +1)
+
+      this.history = newHistory
     },
     history (next) {
       localStorage.boomBox = JSON.stringify(this.history) // eslint-disable-line
