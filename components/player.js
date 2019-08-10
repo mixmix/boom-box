@@ -1,78 +1,44 @@
-const { yo, DatArchive } = document.__modules
-
-const noCassette = yo`
-  <div>Load a cassette!</div>
-`
-const musicExtnsionRegexp = /\.(mp3|m4a)$/
-
-export default async function Player (link) {
-  if (!link) return noCassette
-
-  // link = 'dat://ef69934eb101628180d7dfa72ef04df038b534c943be510b4e4bb8f2d7b5e6b5'
-  if (!link.endsWith('/')) link = link + '/'
-
-  const archive = new DatArchive(link)
-  const files = await archive.readdir()
-
-  const tracks = files.filter(isMusic)
-  const audio = Audio(join(link, tracks[0]))
-  return yo`
-    <div>
-      Player: ${link}
-      ${audio}
-      <ol class="Tracks">
-        ${tracks.map(Track)}
-      </ol>
+const template = `
+  <div class='Player'>
+    <audio ref='player' controls autoplay v-on:ended='nextTrack' />
+    <div class='tracks'>
+      <div v-for='(track, i) in music' v-on:click='selectTrack(i)' :class='trackClass(i)' >
+        {{i + 1}}. {{track.name}}
+      </div>
     </div>
-  `
+    <
+  </div>
+`
 
-  function Track (track) {
-    return yo`
-      <li>
-        <a href="#" onclick=${playTrack(track)}>
-          <span>▶️ </span>
-          ${track}
-        </a>
-      </li>
-    `
-  }
-
-  function playTrack (track) {
-    return function (ev) {
-      ev.preventDefault()
-      ev.stopPropagation()
-
-      audio.pause()
-      audio.src = join(link, track)
-      audio.play()
-
-      // const newAudio = Audio(join(link, track))
-      // yo.update(audio, newAudio)
-      // newAudio.play()
+export default {
+  props: {
+    music: Array
+  },
+  data: () => ({
+    currentTrack: null
+  }),
+  methods: {
+    selectTrack (i) {
+      this.currentTrack = i
+    },
+    nextTrack () {
+      if (this.currentTrack === this.music.length - 1) this.currentTrack = null
+      else this.currentTrack = this.currentTrack + 1
+    },
+    trackClass (i) {
+      return i === this.currentTrack ? 'selected' : ''
     }
-  }
-}
+  },
+  watch: {
+    currentTrack (next, prev) {
+      if (next === null) return
 
-function Audio (src) {
-  return yo`
-    <audio class="Player" style="width: 400px" controls="" src="${src}"></audio>
-  `
+      this.$refs.player.src = this.music[next].uri
+      this.$refs.player.load()
+    }
+  },
+  created () {
+    this.currentTrack = 0
+  },
+  template
 }
-
-function join (link, track) {
-  return link + track
-}
-
-function isMusic (filename) {
-  return filename.match(musicExtnsionRegexp)
-}
-
-// function cify (promise) {
-//   return function () {
-//     var args = Array.from(arguments)
-//     var cb = args.pop()
-//     promise.call(null, args)
-//       .then(result => cb(null, result))
-//       .catch(err => cb(err))
-//   }
-// }

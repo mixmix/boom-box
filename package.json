@@ -4,8 +4,7 @@
   "description": "play dats which have mp3s in them",
   "main": "index.js",
   "scripts": {
-    "build": "run-p build:join build:yo",
-    "build:join": "browserify -p tinyify lib/src/uri-join.js > lib/uri-join.js",
+    "build": "run-p build:yo",
     "build:yo": "browserify -p tinyify lib/src/yo-yo.js > lib/yo-yo.js"
   },
   "browserify": {
