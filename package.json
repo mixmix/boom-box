@@ -8,18 +8,12 @@
     "build:css": "mkdir -p build && run-s build:get-sass build:run-sass",
     "build:get-sass": "browserify src/get-sass.js > build/get-sass.js ",
     "build:run-sass": "node build/get-sass.js | lib/sass-to-css > style.css",
-    "dev": "npm-watch"
+    "dev": "while true; do npm run build:css && sleep 3; done"
   },
   "browserify": {
     "transform": [
       "babelify"
-    ],
-    "plugin": [
-      "tinyify"
     ]
-  },
-  "watch": {
-    "build:run-sass": "**/*.js"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
@@ -43,5 +37,6 @@
   "bugs": {
     "url": "https://github.com/mixmix/boom-box/issues"
   },
-  "homepage": "https://github.com/mixmix/boom-box#readme"
+  "homepage": "https://github.com/mixmix/boom-box#readme",
+  "dependencies": {}
 }

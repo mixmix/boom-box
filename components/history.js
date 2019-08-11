@@ -1,6 +1,7 @@
 const template = `
- <div class='History'>
-   <div v-for='tape in history' v-on:click="$emit('load-tape', tape.uri)" :class='tapeClass(tape)'>
+ <div class='History' v-if='history.length'>
+   <div class='title'></div>
+   <div class='tape' v-for='tape in history' v-on:click="$emit('load-tape', tape.uri)" :class='tapeClass(tape)'>
      {{tape.name}}
    </div>
  </div>
@@ -8,9 +9,15 @@ const template = `
 
 const styles = `
 .History {
-  font-family: mono-space;
+  font-family: arial;
 
-  div {
+  > .title {
+    font-size: .8rem;
+    letter-spacing: 1px;
+    border-bottom: 1px solid black;
+  }
+
+  > .tape {
     padding: 4px;
     cursor: pointer;
 

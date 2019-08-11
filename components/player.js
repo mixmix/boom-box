@@ -2,28 +2,44 @@ const template = `
   <div class='Player'>
     <audio ref='player' controls autoplay v-on:ended='nextTrack' />
     <div class='tracks'>
-      <div v-for='(track, i) in music' v-on:click='selectTrack(i)' :class='trackClass(i)' :key='track.uri'>
-        {{i + 1}}. {{track.name}}
+      <div class='track' v-for='(track, i) in music' v-on:click='selectTrack(i)' :class='trackClass(i)' :key='track.uri'>
+        <div class='num'>{{i < 9 ? ('0' + (i+1)) : (i+1)}}</div>
+        <div class='divider'></div>
+        <div class='name'>{{track.name}}</div>
       </div>
     </div>
-    <
   </div>
 `
 
 const styles = `
 .Player {
-  audio {
+  > audio {
+    width: 100%;
+    filter: brightness(1.1);
+    margin-bottom: 1rem;
   }
-  color: blue;
 
-  .tracks {
-    div {
+  > .tracks {
+    > .track {
       cursor: pointer;
-      padding: 4px;
+
+      display: grid;
+      grid-template-columns: auto auto 1fr;
+      grid-gap: 10px;
 
       &.selected {
         background: black;
         color: white;
+      }
+
+      > .num {
+        font-size: .8rem;
+        letter-spacing: 1px;
+        padding: 3px 0 3px 13px;
+      }
+      > .divider { border-left: 1px solid black; }
+      > .name {
+        padding: 3px 0;
       }
     }
   }

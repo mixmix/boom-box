@@ -4,6 +4,14 @@ const template = `
  </div>
 `
 
+const styles = `
+.CoverArt {
+  img {
+    max-width: 100%
+  }
+}
+`
+
 // TODO if multiple art, then could give option to scroll through them
 
 export default {
@@ -18,5 +26,6 @@ export default {
       return this.art[0].uri
     }
   },
-  template
+  template,
+  styles
 }
