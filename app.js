@@ -12,7 +12,7 @@ const template = `
         <Player :music='music' />
       </div>
       <div class='right'>
-        <input type='text' placeholder='give me DAT mixtape' v-on:keyup="processInput" ref='input' />
+        <input type='text' placeholder='give me hyper mixtape' v-on:keyup="processInput" ref='input' />
         <History :uri='uri' :name='name' v-on:load-tape='playCassette($event)'/>
       </div>
    </div>
@@ -20,7 +20,7 @@ const template = `
 `
 
 // example tape:
-// dat://ef69934eb101628180d7dfa72ef04df038b534c943be510b4e4bb8f2d7b5e6b5
+// hyper://ef69934eb101628180d7dfa72ef04df038b534c943be510b4e4bb8f2d7b5e6b5
 
 const App = { // eslint-disable-line
   el: '#app',
@@ -38,7 +38,7 @@ const App = { // eslint-disable-line
   methods: {
     processInput (ev) {
       var link = ev.target.value.trim()
-      if (!isDatUri(link)) return
+      if (!isDriveURI(link)) return
 
       if (link === this.uri) return
       this.playCassette(link)
@@ -104,6 +104,6 @@ App.styles = `
 
 export default App
 
-function isDatUri (link) {
-  return link.startsWith('dat://')
+function isDriveURI (link) {
+  return link.startsWith('hyper://')
 }
